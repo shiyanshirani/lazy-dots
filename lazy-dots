@@ -3,7 +3,7 @@
 if [ "$1" != "" ] ; then
     LANG="${1^}"
 	curl https://raw.githubusercontent.com/github/gitignore/main/$LANG.gitignore -o .gitignore
-	curl https://raw.githubusercontent.com/shiyanshirani/pre-commit-config-python/main/.pre-commit-config.yml -o .pre-commit-config.yml
+	curl https://raw.githubusercontent.com/shiyanshirani/pre-commit-config-python/main/.pre-commit-config.yaml -o .pre-commit-config.yaml
 	pip install pre-commit
 	pre-commit install
 else
