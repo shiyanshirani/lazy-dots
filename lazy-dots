@@ -1,12 +1,63 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-if [ "$1" != "" ] ; then
-    LANG="${1^}"
-	curl https://raw.githubusercontent.com/github/gitignore/main/$LANG.gitignore -o .gitignore
-	curl https://raw.githubusercontent.com/shiyanshirani/pre-commit-config-python/main/.pre-commit-config.yaml -o .pre-commit-config.yaml
-	pip install pre-commit
-	pre-commit install
-else
-	echo "Please specify which language you're working with."
-fi
+: '
+  _                       _       _       
+ | |                     | |     | |      
+ | | __ _ _____   _    __| | ___ | |_ ___ 
+ | |/ _` |_  / | | |  / _` |/ _ \| __/ __|
+ | | (_| |/ /| |_| | | (_| | (_) | |_\__ \
+ |_|\__,_/___|\__, |  \__,_|\___/ \__|___/
+               __/ |                      
+              |___/                       
 
+ Author: Shiyan Shirani
+ Created: 30th June 2024
+ Version: v0.0.2
+'
+
+REPO_URL="https://github.com/github/gitignore.git"
+REPO_DIR="/tmp/gitignore"
+EXTENSION=".gitignore"
+
+
+process_argument() {
+
+	# Store argument in a local variable and captalize argument
+
+	local arg=$1 
+	local term="$(echo "${arg:0:1}" | tr '[:lower:]' '[:upper:]')${arg:1}"
+
+	echo "You have provided the arguments: $term"
+	
+	# Check if github/gitignore exisits in /tmp
+
+	if  [ ! -d "$REPO_DIR" ]; then
+		echo "Cloning the repository..."
+		git clone $REPO_URL /tmp/gitignore
+	fi
+
+	# cd $REPO_DIR
+	echo "Searching for a file named similar to '$term' in the ${REPO_DIR} ..."
+	matched_file="$(ls "$REPO_DIR" | grep "${term}${EXTENSION}")"
+	if [ -z "$matched_file" ]; then
+		echo "Sorry, github/gitignore does not have any .gitignore files for the argument you've provided."
+	fi
+
+	cp "$REPO_DIR/$matched_file" ./gitignore 
+}
+
+main() {
+	
+	# Check if an argument is provided
+
+	if [ $# -eq 0 ]; then
+		echo "No tool name provided. Please provide a tool name."
+		exit 1
+	fi
+
+	# Process argument value
+
+	process_argument "$1"
+}
+
+main "$@"
